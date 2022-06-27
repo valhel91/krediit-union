@@ -1,12 +1,10 @@
 <html>
- <head>
- </head>
+  <head><script async src="https://api.beta.glia.com/salemove_integration.js"></script></head>
  <body>
   <h1>Hello World Helen</h1>
     <button id="button1">Contact Us</button>
     <button id="button2">Sign Up</button>
- </body>
- <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
+  </body>
 <script>sm.getApi({version: 'v1'}).then(function(glia) {
   glia.updateInformation({
   customAttributesUpdateMethod: 'merge',
