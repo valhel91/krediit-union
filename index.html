@@ -7,5 +7,25 @@
     <button id="button2">Sign Up</button>
  </body>
  <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
- https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2
+<script>fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+  .then(response => response.json())
+  .then(response => {
+      if (response.success) {
+        response.country_alpha_2
+      }
+  });</script>
+  <script>
+		
+    sm.getApi({version: 'v1'}).then(function(glia) {
+      glia.updateInformation({
+      customAttributesUpdateMethod: 'merge',
+      
+      customAttributes: {
+        Location: response.country_alpha_2
+        
+      }
+      })
+    });
+    
+    </script>
  </html>
