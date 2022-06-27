@@ -7,16 +7,4 @@
     <button class="button button2">Sign Up</button>
  </body>
  <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
- 
-    <script>var engagementRequest = salemove.requestEngagement('text');
-   
-     engagementRequest.engagementPromise.then(function(engagement) {
-       var enableRecordEvent = function(engagement) {
-         var someButton = document.querySelector('#button button2');
-   
-         someButton.addEventListener('click', function() {
-           engagement.recordEvent({message: 'Record visitor event'});
-         });
-       };
-     });</script>
  </html>
