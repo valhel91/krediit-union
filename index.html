@@ -1,27 +1,29 @@
 <html>
- <head>
- </head>
- <body>
+
+<head>
+</head>
+
+<body>
   <h1>Hello World Helen</h1>
-    <button id="button1">Contact Us</button>
-    <button id="button2">Sign Up</button>
- </body>
- <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
-  
+  <button id="button1">Contact Us</button>
+  <button id="button2">Sign Up</button>
+</body>
+<script src="https://api.beta.glia.com/salemove_integration.js"></script>
+
 <script>
-sm.getApi({version: 'v1'}).then(function(glia) {
+  sm.getApi({ version: 'v1' }).then(function (glia) {
 
-function addSubmitListener(engagement) {
-  var submit = document.querySelector('#button2');
+    function addSubmitListener(engagement) {
+      var submit = document.querySelector('#button2');
 
-  submit.addEventListener('click', function() {
-    engagement.recordEvent({message: 'Visitor wants to sign up'});
+      submit.addEventListener('click', function () {
+        engagement.recordEvent({ message: 'Visitor wants to sign up' });
+      });
+    }
+
+    glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
   });
-}
 
-glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
-});
-  
 </script>
 
- </html>
+</html>
