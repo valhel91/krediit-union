@@ -7,21 +7,5 @@
     <button id="button2">Sign Up</button>
  </body>
  <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
-  
-<script>
-sm.getApi({version: 'v1'}).then(function(glia) {
-
-function addSubmitListener(engagement) {
-  var submit = document.querySelector('#button2');
-
-  submit.addEventListener('click', function() {
-    engagement.recordEvent({message: 'Visitor wants to sign up'});
-  });
-}
-
-glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
-});
-  
-</script>
-
+ https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2
  </html>
