@@ -3,8 +3,8 @@
  </head>
  <body>
   <h1>Hello World Helen<h1>
-    <button class="button1">Contact Us</button>
-    <button class="button2">Sign Up</button>
+    <button id="button1">Contact Us</button>
+    <button id="button2">Sign Up</button>
  </body>
  <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
   
@@ -12,7 +12,7 @@
 sm.getApi({version: 'v1'}).then(function(glia) {
 
 function addSubmitListener(engagement) {
-  var submit = document.querySelector('#button1');
+  var submit = document.querySelector('#button2');
 
   submit.addEventListener('click', function() {
     engagement.recordEvent({message: 'Visitor wants to sign up'});
