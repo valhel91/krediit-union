@@ -1,11 +1,28 @@
 <html>
-  <head><script src="https://api.beta.glia.com/salemove_integration.js"></script></head>
+  <head><script async src="https://api.beta.glia.com/salemove_integration.js"></script></head>
  <body>
   <h1>Hello World Helen</h1>
     <button id="button1">Contact Us</button>
     <button id="button2">Sign Up</button>
   </body>
-<script>
+  <script>
+        window.onload = function() {
+          sm.getApi({version: 'v1'}).then(function(glia) {
+            fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+        .then(response => response.json())
+        .then(response => {
+            if (response) {
+              glia.updateInformation({
+          customAttributesUpdateMethod: 'merge',
+          customAttributes: {
+            LocationXX: response.country_alpha_2
+          }
+          });
+            }
+        });
+        });
+        };
+
 sm.getApi({version: 'v1'}).then(function(glia) {
 
 function addSubmitListener(engagement) {
@@ -18,6 +35,7 @@ function addSubmitListener(engagement) {
 
 glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
 });
-  
-</script>
+
+
+     </script>
  </html>
