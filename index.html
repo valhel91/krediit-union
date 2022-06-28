@@ -21,6 +21,23 @@ function addSubmitListener(engagement) {
 glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
 });
 
+window.onload = function() {
+          sm.getApi({version: 'v1'}).then(function(glia) {
+            fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+        .then(response => response.json())
+        .then(response => {
+            if (response) {
+              glia.updateInformation({
+          customAttributesUpdateMethod: 'merge',
+          customAttributes: {
+            LocationXX: response.country_alpha_2
+          }
+          });
+            }
+        });
+        });
+        };
+
 
      </script>
  </html>
