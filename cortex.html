@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <script>
+      //Read idtoken from query parameter with the same name.
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+      const idToken = params.idtoken;
+      window.getGliaContext = () => ({ idToken });
+    </script>
+    <script src="https://api.beta.glia.com/salemove_integration.js"></script>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+      .fullscreen-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="Screenshot 2024-08-23 at 12.46.55.png" alt="Cortex homepage screenshot" class="fullscreen-image">
+  </body>
+
+  <script>
+    sm.getApi({version: 'v1'}).then(function(glia) {
+      function addSubmitListener(engagement) {
+        var submit = document.querySelector('#button2');
+        if (submit) {
+          submit.addEventListener('click', function() {
+            engagement.recordEvent({message: 'Visitor wants to sign up'});
+          });
+        }
+      }
+
+      glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
+    });
+
+    window.onload = function() {
+      sm.getApi({version: 'v1'}).then(function(glia) {
+        fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+          .then(response => response.json())
+          .then(response => {
+            if (response) {
+              glia.updateInformation({
+                customAttributesUpdateMethod: 'merge',
+                customAttributes: {
+                  LocationXX: response.country_alpha_2,
+                  NewAttribute: "this-is-now-changed"
+                }
+              });
+            }
+          });
+      });
+    };
+  </script>
+</html>
