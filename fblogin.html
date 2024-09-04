@@ -8,115 +8,104 @@
       const idToken = params.idtoken;
       window.getGliaContext = () => ({ idToken });
     </script>
-    <script src="https://api.beta.glia.com/salemove_integration.js"></script></head>
- <body>
+    <script src="https://api.beta.glia.com/salemove_integration.js"></script>
     <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-                  appId: '1562326167693788', // Your Meta app ID
-                  version: 'v18.0' // Meta Graph API version
-           })
-        };
-      </script>
-      <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-      
-  <h1>Hello World Helen</h1>
-  <button onclick="launchEmbeddedSignup()" style="background-color: #1877f2; border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; height: 40px; padding: 0 24px;">
-    Login with Facebook
-    </button>
-// Handle WhatsApp Embedded Signup
-function launchEmbeddedSignup() {
-  // Launch Facebook login
-  FB.login(
-    function (response) {
-      // Since you are using Twilio's APIs, you do not need to do anything with the response here.
-    },
-    {
-      config_id: "3639230559663523",
-      auth_type: "rerequest", // Avoids "user is already logged" in errors if users click the button again before refreshing the page
-      response_type: "code",
-      override_default_response_type: true,
-      extras: {
-        sessionInfoVersion: 2, // Required to get WABA ID
-        // Leave below commented for now, you will need to replace this once your app is approved by Meta
-        // setup: {
-        //   solutionID: "KEEP_IN_QUOTES_BUT_REPLACE_WITH_YOUR_SOLUTION_ID", 
-        // }
-      }
-    }
-  );
-}
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId: '1562326167693788', // Your Meta app ID
+          version: 'v18.0' // Meta Graph API version
+        });
+      };
 
-// Define session handler
-const embeddedSignupInfoListener = (event) => {
-  if (!event.origin.endsWith("facebook.com")) return;
-  try {
-    const data = JSON.parse(event.data);
-    if (data.type === "WA_EMBEDDED_SIGNUP") {
-      // if user finishes the Embedded Signup flow and the popup window closes
-      if (data.event === "FINISH"|| data.event === "FINISH_ONLY_WABA") {
-        const { phone_number_id, waba_id } = data.data;
-        console.log({ phone_number_id, waba_id });
-        // For now, you do not need to do anything here. Once App Review has been completed, then you
-        // will pass the WABA ID to your backend service to use the Twilio Senders API to register the WhatsApp Sender.
-        // Not that Meta only returns their phone_number_id, not the full phone number. Make sure to collect the
-        // full phone number in your own user interface before the user clicks on this button.
-      }
-      else {
-        // Otherwise the user canceled the Embedded Signup flow by closing the popup window before the last step.
-        // We recommend you show an error to the user here.
-        const { current_step } = data.data;
-        console.log(`User did not finish ESU. Last step: ${current_step}`);
-      }
-    }
-  } catch {
-    return;
-  }
-};
-
-// Listen for Embedded Signup events
-window.addEventListener("message", embeddedSignupInfoListener);
-
-// When the user navigates away from the page, remove the event listener
-window.addEventListener ("beforeunload" , () => 
-    window.removeEventListener ("message", embeddedSignupInfoListener);
-);
-
-  </body>
-
-<script>
-
-sm.getApi({version: 'v1'}).then(function(glia) {
-
-function addSubmitListener(engagement) {
-  var submit = document.querySelector('#button2');
-
-  submit.addEventListener('click', function() {
-    engagement.recordEvent({message: 'Visitor wants to sign up'});
-  });
-}
-
-glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
-});
-
-window.onload = function() {
-          sm.getApi({version: 'v1'}).then(function(glia) {
-            fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
-        .then(response => response.json())
-        .then(response => {
-            if (response) {
-              glia.updateInformation({
-          customAttributesUpdateMethod: 'merge',
-          customAttributes: {
-            LocationXX: response.country_alpha_2,
-            NewAttribute: "this-is-now-changed"
-          }
-          });
+      function launchEmbeddedSignup() {
+        // Launch Facebook login
+        FB.login(
+          function (response) {
+            // Since you are using Twilio's APIs, you do not need to do anything with the response here.
+          },
+          {
+            config_id: "3639230559663523",
+            auth_type: "rerequest",
+            response_type: "code",
+            override_default_response_type: true,
+            extras: {
+              sessionInfoVersion: 2,
+              // setup: {
+              //   solutionID: "KEEP_IN_QUOTES_BUT_REPLACE_WITH_YOUR_SOLUTION_ID", 
+              // }
             }
-        });
-        });
-        };
+          }
+        );
+      }
 
+      // Define session handler
+      const embeddedSignupInfoListener = (event) => {
+        if (!event.origin.endsWith("facebook.com")) return;
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "WA_EMBEDDED_SIGNUP") {
+            if (data.event === "FINISH"|| data.event === "FINISH_ONLY_WABA") {
+              const { phone_number_id, waba_id } = data.data;
+              console.log({ phone_number_id, waba_id });
+            } else {
+              const { current_step } = data.data;
+              console.log(`User did not finish ESU. Last step: ${current_step}`);
+            }
+          }
+        } catch {
+          return;
+        }
+      };
 
-     </script>
- </html>
+      // Listen for Embedded Signup events
+      window.addEventListener("message", embeddedSignupInfoListener);
+
+      // When the user navigates away from the page, remove the event listener
+      window.addEventListener("beforeunload", () => 
+        window.removeEventListener("message", embeddedSignupInfoListener)
+      );
+
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('fbLoginButton').addEventListener('click', launchEmbeddedSignup);
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Hello World Helen</h1>
+    <button id="fbLoginButton" style="background-color: #1877f2; border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; height: 40px; padding: 0 24px;">
+      Login with Facebook
+    </button>
+
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    
+    <script>
+      sm.getApi({version: 'v1'}).then(function(glia) {
+        function addSubmitListener(engagement) {
+          var submit = document.querySelector('#button2');
+          submit.addEventListener('click', function() {
+            engagement.recordEvent({message: 'Visitor wants to sign up'});
+          });
+        }
+        glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
+      });
+
+      window.onload = function() {
+        sm.getApi({version: 'v1'}).then(function(glia) {
+          fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+            .then(response => response.json())
+            .then(response => {
+              if (response) {
+                glia.updateInformation({
+                  customAttributesUpdateMethod: 'merge',
+                  customAttributes: {
+                    LocationXX: response.country_alpha_2,
+                    NewAttribute: "this-is-now-changed"
+                  }
+                });
+              }
+            });
+        });
+      };
+    </script>
+  </body>
+</html>
