@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const privateKey = fs.readFileSync('private_key.pem', 'utf8');
+const privateKey = fs.readFileSync('/Users/helenvaljataga/Documents/GitHub/krediit-union/krediit-union/private_key.pem', 'utf8');
 
 app.post('/generate-token', (req, res) => {
     const { username } = req.body;
