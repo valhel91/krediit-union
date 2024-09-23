@@ -4,9 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Krediit Union Cortex Login</title>
-    <script src="https://api.glia.com/salemove_integration.js"></script>
     <style>
-        /* ... (keep the existing styles) ... */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .fullscreen-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -23,32 +56,31 @@
 
         window.getGliaContext = () => ({ idToken });
 
-        // Initialize Glia
         function initGlia() {
-            sm.getApi({version: 'v1'}).then(function(glia) {
-                // Set up event listeners and other Glia-related functionality
-                glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
-                
-                // Update Glia information if we have an idToken
-                if (idToken) {
-                    glia.updateInformation({
-                        jwt: idToken
-                    }).then(function() {
-                        console.log('Glia initialized successfully with JWT');
-                    }).catch(function(error) {
-                        console.error('Error updating Glia information:', error);
-                    });
-                }
+            // Load Glia script dynamically
+            const script = document.createElement('script');
+            script.src = 'https://api.glia.com/salemove_integration.js';
+            script.onload = function() {
+                sm.getApi({version: 'v1'}).then(function(glia) {
+                    glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
+                    
+                    if (idToken) {
+                        glia.updateInformation({
+                            jwt: idToken
+                        }).then(function() {
+                            console.log('Glia initialized successfully with JWT');
+                        }).catch(function(error) {
+                            console.error('Error updating Glia information:', error);
+                        });
+                    }
 
-                // Fetch and update location information
-                fetchLocationInfo(glia);
-            }).catch(function(error) {
-                console.error('Error initializing Glia:', error);
-            });
+                    fetchLocationInfo(glia);
+                }).catch(function(error) {
+                    console.error('Error initializing Glia:', error);
+                });
+            };
+            document.body.appendChild(script);
         }
-
-        // Call initGlia when the page loads
-        window.addEventListener('load', initGlia);
 
         document.getElementById('loginButton').addEventListener('click', function() {
             const username = document.getElementById('username').value;
@@ -64,8 +96,7 @@
             .then(response => response.json())
             .then(data => {
                 idToken = data.token;
-                // Re-initialize Glia with the new token
-                initGlia();
+                initGlia(); // Initialize Glia after successful login
             })
             .catch((error) => {
                 console.error('Error:', error);
