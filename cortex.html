@@ -1,11 +1,13 @@
 <html>
   <head>
     <script>
-      //Read idtoken from query parameter with the same name.
+      // Read idtoken from query parameter with the same name.
       const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
       });
       const idToken = params.idtoken;
+      console.log('Received idToken:', idToken); // Log the received token
+
       window.getGliaContext = () => ({ idToken });
     </script>
     <script src="https://api.beta.glia.com/salemove_integration.js"></script>
@@ -31,6 +33,8 @@
 
   <script>
     sm.getApi({version: 'v1'}).then(function(glia) {
+      console.log('Glia API obtained successfully');
+
       function addSubmitListener(engagement) {
         var submit = document.querySelector('#button2');
         if (submit) {
@@ -44,6 +48,7 @@
 
       // Initialize Glia with the JWT token
       if (idToken) {
+        console.log('Attempting to initialize Glia with token:', idToken);
         glia.updateInformation({
           jwt: idToken
         }).then(function() {
@@ -51,25 +56,37 @@
         }).catch(function(error) {
           console.error('Error updating Glia information:', error);
         });
+      } else {
+        console.warn('No idToken found for Glia initialization');
       }
+
+      // Fetch IP location information
+      fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
+        .then(response => response.json())
+        .then(response => {
+          if (response) {
+            console.log('IP location data received:', response);
+            glia.updateInformation({
+              customAttributesUpdateMethod: 'merge',
+              customAttributes: {
+                LocationXX: response.country_alpha_2,
+                NewAttribute: "this-is-now-changed"
+              }
+            }).then(function() {
+              console.log('Custom attributes updated successfully');
+            }).catch(function(error) {
+              console.error('Error updating custom attributes:', error);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching IP location:', error);
+        });
+    }).catch(function(error) {
+      console.error('Error getting Glia API:', error);
     });
 
-    window.onload = function() {
-      sm.getApi({version: 'v1'}).then(function(glia) {
-        fetch("https://api.ip2loc.com/1h2GbTZxbSxofMxORwPUHh28N4c1Yg1Y/detect?include=country_alpha_2")
-          .then(response => response.json())
-          .then(response => {
-            if (response) {
-              glia.updateInformation({
-                customAttributesUpdateMethod: 'merge',
-                customAttributes: {
-                  LocationXX: response.country_alpha_2,
-                  NewAttribute: "this-is-now-changed"
-                }
-              });
-            }
-          });
-      });
-    };
+    // Log the full URL for debugging
+    console.log('Current page URL:', window.location.href);
   </script>
 </html>
