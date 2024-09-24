@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Krediit Union Cortex Login</title>
-    <script src="https://api.glia.com/salemove_integration.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -53,26 +52,27 @@
     </div>
 
     <script>
-        // Basic Glia initialization
-        window.onload = function() {
-            if (typeof sm !== 'undefined') {
-                sm.getApi({version: 'v1'}).then(function(glia) {
-                    console.log('Glia API initialized successfully');
-                    // You can add more Glia-specific code here if needed
-                }).catch(function(error) {
-                    console.error('Error initializing Glia API:', error);
-                });
-            } else {
-                console.error('Glia script not loaded properly');
-            }
-        };
-
-        // Login functionality (separate from Glia for now)
         document.getElementById('loginButton').addEventListener('click', function() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            console.log('Login attempted with username:', username);
-            // Here you would typically send the login request to your server
+
+            fetch('http://localhost:3000/generate-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const token = data.token;
+                // Redirect to the specified page with the token as a query parameter
+                window.location.href = `https://valhel91.github.io/krediit-union/cortex?idtoken=${encodeURIComponent(token)}`;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Login failed. Please try again.');
+            });
         });
     </script>
 </body>

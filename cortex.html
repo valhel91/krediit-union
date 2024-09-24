@@ -41,6 +41,17 @@
       }
 
       glia.addEventListener(glia.EVENTS.ENGAGEMENT_START, addSubmitListener);
+
+      // Initialize Glia with the JWT token
+      if (idToken) {
+        glia.updateInformation({
+          jwt: idToken
+        }).then(function() {
+          console.log('Glia initialized successfully with JWT');
+        }).catch(function(error) {
+          console.error('Error updating Glia information:', error);
+        });
+      }
     });
 
     window.onload = function() {
