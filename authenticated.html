@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cortex Financial Demo - Authenticated</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/fontello.css" rel="stylesheet">
+    <link href="css/update-styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Merriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div class="header-2">
+        <!-- Header content -->
+    </div>
+
+    <div class="page-header mobile-header">
+        <!-- Page header content -->
+    </div>
+
+    <div class="account-summary-back">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="wrapper-content bg-light summary-container">
+                        <!-- Account summary content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer section-space100">
+        <!-- Footer content -->
+    </div>
+
+    <div class="tiny-footer">
+        <!-- Tiny footer content -->
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/menumaker.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/sticky-header.js"></script>
+    <script src="js/language-toggle.js"></script>
+    <script src="js/mobile-menu.js"></script>
+    <script src="js/confirm-payment-data.js"></script>
+    <script src="js/login-validation.js"></script>
+    <script src="https://api.beta.glia.com/salemove_integration.js"></script>
+
+    <script>
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+        const idToken = params.idtoken;
+        console.log('Received idToken:', idToken);
+
+        window.getGliaContext = () => ({ idToken });
+
+        sm.getApi({version: 'v1'}).then(function(glia) {
+            console.log('Glia API obtained successfully');
+
+            if (idToken) {
+                console.log('Attempting to initialize Glia with token:', idToken);
+                glia.updateInformation({
+                    jwt: idToken
+                }).then(function() {
+                    console.log('Glia initialized successfully with JWT');
+                }).catch(function(error)

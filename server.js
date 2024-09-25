@@ -1,27 +1,48 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+const port = 3000;
 
+// CORS configuration
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
+
+// Read the private key from the specified file
 const privateKey = fs.readFileSync('/Users/helenvaljataga/Documents/GitHub/krediit-union/krediit-union/private_key.pem', 'utf8');
 
 app.post('/generate-token', (req, res) => {
-    const { username } = req.body;
-    const payload = {
-        visitorId: username,
-        siteId: '447028fc-8f05-4ca5-92f8-b1c7bb1e292f', // Replace with your actual site ID
-        lookup_id: username,
-        email: `${username}@mailinator.com`,
-        exp: Math.floor(Date.now() / 1000) + (5 * 60) // Token expires in 5 minutes
+  const { username, password } = req.body;
+
+  // Your authentication logic here
+  // For this example, let's assume authentication is successful
+  const authenticated = true;
+
+  if (authenticated) {
+    const claims = {
+      'name': username,
+      'email': `${username}@mailinator.com`,
+      'sub': username,
+      'lookup_id': `${username}_id`,
+      'exp': Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 5, // 5 days from now
+      'iat': Math.floor(Date.now() / 1000)
     };
 
-    const token = jwt.sign(payload, privateKey, { algorithm: 'ES256' });
+    const token = jwt.sign(claims, privateKey, { algorithm: 'ES256' });
+
     res.json({ token });
+  } else {
+    res.status(401).json({ message: 'Authentication failed' });
+  }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
