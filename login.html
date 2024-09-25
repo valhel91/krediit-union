@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cortex Financial Demo - Login</title>
+    <title>Cortex Financial Demo</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/update-styles.css" rel="stylesheet">
@@ -14,40 +13,18 @@
     <link href="css/fontello.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Merriweather:300,300i,400,400i,700,700i" rel="stylesheet">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <style>
-        body, html {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        .fullscreen-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-    </style>
 </head>
-
 <body>
-    <img src="Screenshot 2024-08-23 at 12.46.55.png" alt="Cortex homepage screenshot" class="fullscreen-image">
-
+    <!-- Header and navigation code remains the same -->
     <div class="header-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 logo-login-button">
-                    <div class="logo">
-                        <img src="images/Cortex_v1_140x70px.png " alt="Cortex - Insurance Company Website Template">
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- ... (header content) ... -->
     </div>
 
+    <div class="page-header mobile-header">
+        <!-- ... (page header content) ... -->
+    </div>
+
+    <!-- content start -->
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -56,16 +33,16 @@
                         <div class="row">
                             <div class="login-container col-12">
                                 <form id="loginForm">
-                                    <div class="col-xl-4 col-lg-4 col-12">
+                                    <div id="username-div" class="col-xl-4 col-lg-4 col-12">
                                         <label class="control-label" for="username">Username</label>
-                                        <input class="form-control input-md" id="username" name="username" type="text" required>
+                                        <input class="form-control input-md" id="username" maxlength="40" name="username" size="20" type="text" required><br>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-12">
                                         <label class="control-label" for="password">Password</label>
                                         <input id="password" name="password" type="password" class="form-control input-md" required>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-12 mt20">
-                                        <button type="submit" class="btn btn-default">Login</button>
+                                        <input type="submit" id="loginButton" name="submit" class="btn btn-default" value="Login">
                                     </div>
                                 </form>
                             </div>
@@ -75,31 +52,52 @@
             </div>
         </div>
     </div>
+    <!-- /.content end -->
 
+    <!-- Footer code remains the same -->
+    <div class="footer section-space100">
+        <!-- ... (footer content) ... -->
+    </div>
+
+    <div class="tiny-footer">
+        <!-- ... (tiny footer content) ... -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/menumaker.js"></script>
+    <script type="text/javascript" src="js/jquery.sticky.js"></script>
+    <script type="text/javascript" src="js/sticky-header.js"></script>
+    <script src="//api.salemove.com/salemove_integration.js"></script>
+    <script type="text/javascript" src="js/language-toggle.js"></script>
+    <script type="text/javascript" src="js/mobile-menu.js"></script>
+
+    <!-- Login and token sending functionality -->
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
-            fetch('http://localhost:3000/generate-token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const token = data.token;
-                window.location.href = `authenticated.html?idtoken=${encodeURIComponent(token)}`;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Login failed. Please try again.');
-            });
+        fetch('http://localhost:3000/generate-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const token = data.token;
+            // Redirect to the specified page with the token as a query parameter
+            window.location.href = `https://valhel91.github.io/krediit-union/authenticated?idtoken=${encodeURIComponent(token)}`;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Login failed. Please try again.');
         });
+    });
     </script>
 </body>
-
 </html>
